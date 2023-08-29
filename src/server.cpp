@@ -9,24 +9,22 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <cstring>
-#include "../include/errIf.h"
+#include "../include/util.h"
 
 int main(){
-    std::cout<<"Hello World! from server.cpp"<<std::endl;
-
-    int server_sockfd = socket(AF_INET,SOCK_STREAM,0);
-    struct sockaddr_in server_addr;
-
     //init server_addr;
+    int server_sockfd = socket(AF_INET,SOCK_STREAM,0);
+    errIf(server_sockfd == -1, "sockfd init error");
+
+    struct sockaddr_in server_addr;
     bzero(&server_addr,sizeof (server_addr));
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     server_addr.sin_port = htons(8088);
 
     //bind & listen
-    bind(server_sockfd,(sockaddr*)&server_addr,sizeof(server_addr));
-    std::cout<<server_sockfd<<std::endl;
-    listen(server_sockfd,SOMAXCONN);
+    errIf(bind(server_sockfd,(sockaddr*)&server_addr,sizeof(server_addr)),"socket bind error");
+    errIf(listen(server_sockfd,SOMAXCONN),"socket listen error");
 
     //init client_socket information
     struct sockaddr_in client_addr;
@@ -35,7 +33,7 @@ int main(){
 
     //accept
     int client_sockfd = accept(server_sockfd,(sockaddr*)&client_addr,&client_addr_len);
-
+    errIf(client_sockfd==-1,"client_socketfd accept error");
     //print result
     printf("Client %d received! IP: %s , Port: %d\n",client_sockfd, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
