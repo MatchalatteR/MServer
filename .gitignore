@@ -1,0 +1,17 @@
+# 忽略 CLion IDE 自动生成的目录和文件
+.idea/
+*.iml
+
+# 忽略 CMake 生成的编译文件和目录
+cmake-build-debug/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+*.so
+*.o
+*.a
+*.cmake
+*.cbp
+*.log
+*.txt
+Testing/
