@@ -4,7 +4,7 @@
 
 
 
-## Day01
+## Day 01
 
 **Basic usage of socket in cpp**
 
@@ -12,6 +12,18 @@
 
 
 
-## Day02
+## Day 02
 
 **Add Basic echo (read,write) to Server && Client**
+
+**Add Epoll data struct for high concurrency**
+
+**Now it's a echo server for which could receive **
+
+
+
+## Day 03
+
+**// TODO: Benchmark for high concurrency**
+
+**// TODO: Using class to finish basic wrap**
