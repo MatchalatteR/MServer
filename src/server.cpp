@@ -15,18 +15,19 @@
 
 
 
-void echo_client(int client_sockfd, char* read_buf){
-    bzero(&read_buf,sizeof (read_buf));
+void echo_client(int client_sockfd, char* read_buf, int epoll_fd){
+    bzero(read_buf,BUFSIZE);
     printf("Server Waiting!\n");
-    ssize_t read_bytes = read(client_sockfd,&read_buf,sizeof (read_buf));
+    ssize_t read_bytes = read(client_sockfd,read_buf,BUFSIZE);
     if(read_bytes>0){
-        printf("Message from client %d: %s\n",client_sockfd,read_buf);
-        printf("Echo to Client: %d\n",client_sockfd);
-        write(client_sockfd,read_buf,sizeof(read_buf));
+        printf("Message from client %u: %s\n",client_sockfd,read_buf);
+        printf("Echo to Client: %u\n",client_sockfd);
+        write(client_sockfd,read_buf,BUFSIZE);
     }else if(read_bytes==0){// Connection closed;
         printf("Connection from %d closed\n",client_sockfd);
         close(client_sockfd);
-    }else if(read_bytes==-1){
+		epoll_ctl(epoll_fd, EPOLL_CTL_DEL, client_sockfd, NULL);
+	}else if(read_bytes==-1){
         printf("Client Disconnected!\n");
         close(client_sockfd);
         errIf(true,"read error");
@@ -36,7 +37,7 @@ void echo_client(int client_sockfd, char* read_buf){
 int main(){
     char read_buf[BUFSIZE];
 
-    //init server_addr;
+    //init server fd && addr;
     int server_sockfd = socket(AF_INET,SOCK_STREAM,0);
     errIf(server_sockfd == -1, "sockfd init error");
     struct sockaddr_in server_addr = {AF_INET, htons(SERVER_PORT),{.s_addr = inet_addr(SERVER_IPADDR)}};
@@ -71,7 +72,7 @@ int main(){
                 printf("Client %d received! IP: %s , Port: %d\n",new_cli_fd, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
             }else{
                 /*Msg from Connected Client*/
-                echo_client(ep_events[i].data.fd,read_buf);
+                echo_client(ep_events[i].data.fd,read_buf,epoll_fd);
             }
         }
 

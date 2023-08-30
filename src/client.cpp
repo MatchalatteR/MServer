@@ -15,7 +15,7 @@ int main(){
     errIf(server_sockfd == -1, "sockfd init error");
 
     //init server_addr
-    struct sockaddr_in server_addr;
+    struct sockaddr_in server_addr = {};
     bzero(&server_addr,sizeof(server_addr));
 
     server_addr.sin_family = AF_INET;
@@ -25,11 +25,11 @@ int main(){
     printf("Client Trying to Connect!\n");
     //connect
     errIf(connect(server_sockfd,(sockaddr*)&server_addr,sizeof(server_addr)),"connect error");
-
+  	printf("Connected!\n");
     //Echo response
     while(true){
-        bzero(&write_buf,sizeof(write_buf));
-        scanf("%s",&write_buf);
+        bzero(write_buf,sizeof(write_buf));
+        scanf("%s",write_buf);
 
         //Sending msg
         size_t write_sig = write(server_sockfd,&write_buf,sizeof (write_buf));
