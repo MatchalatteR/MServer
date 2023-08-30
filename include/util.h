@@ -10,5 +10,8 @@
 
 #ifndef MSERVER_UTIL_H
 #define MSERVER_UTIL_H
+
+#define BUFSIZE 1024
+
 void errIf(bool condition, const char* msg);
 #endif //MSERVER_UTIL_H
